@@ -21,13 +21,33 @@ function RegisterUser({loginValues, setLoginValues}) {
     const [errorMessage, setErrorMessage] = useState('');
     const [passwordStrength, setPasswordStrength] = useState("");
 
-    const checkStrength = (pw) => {
-        const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+    const commonPasswords = ["123456", "password", "12345678", "qwerty", "abc123"];
 
-        if (strongRegex.test(pw)) return "strong";
-        if (pw.length >= 6) return "medium";
+    function checkStrength(password) {
+        let passed = 0;
+
+        // Länge
+        if (/^.{8,20}$/.test(password)) passed++;
+        // Kleinbuchstaben
+        if (/[a-z]/.test(password)) passed++;
+        // Großbuchstaben
+        if (/[A-Z]/.test(password)) passed++;
+        // Zahl
+        if (/[0-9]/.test(password)) passed++;
+        // Sonderzeichen
+        if (/[@#$%^&+=!?.]/.test(password)) passed++;
+        // Häufige Passwörter ausschließen
+        if (!commonPasswords.includes(password.toLowerCase())) passed++;
+
+        // Prozentualer Score
+        const percentage = Math.round((passed / 6) * 100);
+
+        // Rückgabe in Kategorien
+        if (percentage === 100) return "strong";
+        if (percentage >= 70) return "medium";
         return "weak";
-    };
+    }
+
 
     const handlePasswordChange = (e) => {
         const pw = e.target.value;

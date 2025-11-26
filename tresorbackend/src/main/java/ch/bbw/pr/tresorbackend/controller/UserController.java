@@ -60,7 +60,11 @@ public class UserController {
       System.out.println("UserController.createUser: input validation passed");
 
       //password validation
-      //todo add implementation
+       if (!registerUser.getPassword().equals(registerUser.getPasswordConfirmation())) {
+           JsonObject obj = new JsonObject();
+           obj.addProperty("message", "Passwords do not match.");
+           return ResponseEntity.badRequest().body(new Gson().toJson(obj));
+       }
       System.out.println("UserController.createUser, password validation passed");
 
       //transform registerUser to user
